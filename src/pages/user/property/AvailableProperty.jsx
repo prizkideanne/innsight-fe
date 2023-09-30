@@ -341,7 +341,7 @@ const AvailableProperty = () => {
                             )}
                             type={row.Property_type?.name}
                             location={row.Location.city}
-                            image={`${process.env.REACT_APP_API_BASE_URL}${row.Rooms[0]?.room_img}`}
+                            image={row.Rooms[0]?.room_img}
                           >
                             <div className="w-1/3 ml-auto">
                               <Button

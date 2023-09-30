@@ -62,9 +62,7 @@ function BuildingImageUpload({ images, onImagesChange, setDeletedImages }) {
       {/* Preview images */}
       <div className="mt-5 grid grid-cols-1 md:grid-cols-3 gap-10">
         {images.map((image, index) => {
-          const url = image.img
-            ? process.env.REACT_APP_API_BASE_URL + image.img
-            : image;
+          const url = image.img ?? image;
           return (
             <div
               key={index}

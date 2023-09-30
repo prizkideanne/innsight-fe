@@ -24,9 +24,7 @@ const slice = createSlice({
       };
       if (payload.Profile && payload.Profile.profile_picture) {
         const { profile_picture } = payload.Profile;
-        const image = profile_picture.includes("googleusercontent")
-          ? profile_picture
-          : process.env.REACT_APP_API_BASE_URL + profile_picture;
+        const image = profile_picture;
         state.user.photoProfile = image;
       } else {
         state.user.photoProfile =
