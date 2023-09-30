@@ -188,9 +188,10 @@ function TenantOrderList() {
             </Column>
             <img
               className="w-full max-w-sm rounded-lg mx-auto"
+              alt="payment proof"
               src={
                 order.payment_proof != null
-                  ? `${process.env.REACT_APP_API_BASE_URL}${order.payment_proof}`
+                  ? order.payment_proof
                   : order.booking_status == "CANCELED"
                   ? "https://img.freepik.com/free-vector/cancelled-events-announcement-illustration_23-2148584716.jpg?w=740&t=st=1695730800~exp=1695731400~hmac=61d42b42b7c67548d75323f787610f18e77070007c09f23b4bd21a214f0415ea"
                   : "https://img.freepik.com/free-vector/image-upload-concept-illustration_114360-996.jpg?w=740&t=st=1695729458~exp=1695730058~hmac=11cf587bf9be350245277d733c4f5912d42edc7adc4f70205f379e769d15cdba"

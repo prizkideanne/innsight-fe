@@ -88,6 +88,7 @@ const DetailProperty = () => {
         }
       )
       .then((response) => {
+        console.log("response", response.data.data);
         setProperty(response.data.data);
         const prop = response.data.data;
         let prices = prop?.Rooms.map((row) => row.base_price);
@@ -247,7 +248,7 @@ const DetailProperty = () => {
                 >
                   <img
                     className=" w-full aspect-video object-cover rounded-xl"
-                    src={`${process.env.REACT_APP_API_BASE_URL}${row?.img}`}
+                    src={row?.img}
                   />
                 </div>
               ))}
@@ -327,7 +328,7 @@ const DetailProperty = () => {
                         />
                       </div>
                     }
-                    image={`${process.env.REACT_APP_API_BASE_URL}${row?.room_img}`}
+                    image={row?.room_img}
                   />
                 </div>
               ))}

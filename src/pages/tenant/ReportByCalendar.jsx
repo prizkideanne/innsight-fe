@@ -55,7 +55,7 @@ function ReportByCalendar() {
                   item.Property.name + ", " + item.Property.Location.city
                 }
                 price={item.status}
-                image={`${process.env.REACT_APP_API_BASE_URL}${item?.room_img}`}
+                image={item?.room_img}
                 priceColor={
                   item.status == "Room Available"
                     ? "text-green-700"

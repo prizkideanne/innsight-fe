@@ -234,7 +234,7 @@ function OrderList() {
                         />
                       }
                       title={row.Room?.Property?.name}
-                      image={`${process.env.REACT_APP_API_BASE_URL}${row.Room?.room_img}`}
+                      image={row.room_img}
                       type={`${row.Room?.Property?.Property_type?.name} - ${row.Room?.name}`}
                       check_in={moment(row.check_in_date, "YYYY-MM-DD").format(
                         "DD/MM/YYYY"
