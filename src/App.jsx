@@ -109,23 +109,6 @@ function App() {
             <Route index element={<PropertyAdd />} />
           </Route>
         </Route>
-        {/* TENANT Authenticated Routes */}
-        <Route
-          path="/my-property"
-          element={<AuthenticatedRoute roles={["TENANT"]} />}
-        >
-          <Route path=":propertyId" element={<DashboardSideBar />}>
-            <Route element={<PropertyLayout />}>
-              <Route index element={<PropertyEdit />} />
-              <Route path="rooms" element={<PropertyRooms />} />
-              <Route path="availability" element={<PropertyAvailability />} />
-              <Route path="special-price" element={<PropertySpecialPrice />} />
-            </Route>
-          </Route>
-          <Route path="add" element={<DashboardSideBar />}>
-            <Route index element={<PropertyAdd />} />
-          </Route>
-        </Route>
 
         <Route
           path="category-area"

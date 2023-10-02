@@ -5,10 +5,20 @@ import TopBar from "./TopBar";
 import { Outlet } from "react-router-dom";
 import { selectCurrentUser } from "../../../store/auth/authSlice";
 import { useSelector } from "react-redux";
+import GeneralModal from "../../modals/GeneralModal";
+import LoadingCard from "../../cards/LoadingCard";
 
 export default function DashboardSideBar() {
   const user = useSelector(selectCurrentUser);
   const [sidebarOpen, setSidebarOpen] = useState(false);
+
+  if (!user.role) {
+    return (
+      <GeneralModal isOpen={true} closeModal={() => null}>
+        <LoadingCard />
+      </GeneralModal>
+    );
+  }
 
   return user?.role === "TENANT" ? (
     <div>

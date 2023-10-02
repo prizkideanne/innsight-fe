@@ -60,7 +60,7 @@ const RoomCard = ({
 
   return (
     <div className="space-y-2 border rounded-lg border-gray-500 p-5">
-      <div className="w-full justify-end items-start grow-0 flex">
+      <div className="w-fit md:w-full justify-end items-start grow-0 flex">
         <button
           type="button"
           onClick={removeRoom}
