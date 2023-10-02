@@ -31,6 +31,8 @@ import { useSelector } from "react-redux";
 import { selectCurrentUser } from "../../../store/auth/authSlice";
 import useToken from "../../../shared/hooks/useToken";
 import { useModal } from "../../../shared/context/ModalContext";
+import GeneralModal from "../../../components/modals/GeneralModal";
+import LoadingCard from "../../../components/cards/LoadingCard";
 
 const DetailProperty = () => {
   let [searchParams] = useSearchParams();
@@ -50,6 +52,7 @@ const DetailProperty = () => {
   const [totalPage, setTotalPage] = useState(1);
   const [currentPage, setCurrentPage] = useState(1);
   const [limitPage, setLimitPage] = useState(4);
+  const [isLoading, setIsLoading] = useState(false);
   let { id } = useParams();
   const today = new Date();
   const [selectedDays, setSelectedDays] = useState({
@@ -76,6 +79,7 @@ const DetailProperty = () => {
     toast.success("Change Date Success");
   };
   const getDetailProperty = async (end) => {
+    setIsLoading(true);
     await axios
       .get(
         `${process.env.REACT_APP_API_BASE_URL}/product/${
@@ -112,6 +116,7 @@ const DetailProperty = () => {
         setMinSpecialPrice(getMinimumPrice(prices2, false));
         setDateSpecialPrice(dateSpecialPriceTmp);
       });
+    setIsLoading(false);
   };
   const handleDayClick = (day, modifiers = {}) => {
     if (modifiers.disabled) {
@@ -139,6 +144,7 @@ const DetailProperty = () => {
   };
 
   const getReview = async () => {
+    setIsLoading(true);
     await axios
       .get(
         `${process.env.REACT_APP_API_BASE_URL}/transaction/review/property/${
@@ -154,6 +160,7 @@ const DetailProperty = () => {
         setReviews(response.data.data);
         setTotalPage(response.data.pagination.totalPage);
       });
+    setIsLoading(false);
   };
 
   const onChangePage = (page) => {
@@ -209,6 +216,9 @@ const DetailProperty = () => {
 
   return (
     <>
+      <GeneralModal isOpen={isLoading} closeModal={setIsLoading}>
+        <LoadingCard />
+      </GeneralModal>
       <MainContainer>
         <div className=" w-full flex flex-col max-w-7xl md:max-w-4xl mx-auto gap-8 md:gap-10 px-4">
           <div className="flex flex-col w-full justify-center  py-4 px-4 border gap-y-4 mt-8  rounded-xl">

@@ -7,6 +7,8 @@ import { addUser } from "../store/auth/authSlice";
 import useToken from "../shared/hooks/useToken";
 import { useNavigate, useSearchParams } from "react-router-dom";
 import { useLoginSocial } from "../shared/hooks/useLoginSocial";
+import GeneralModal from "../components/modals/GeneralModal";
+import LoadingCard from "../components/cards/LoadingCard";
 
 function Login() {
   const [searchParams] = useSearchParams();
@@ -16,9 +18,11 @@ function Login() {
   const dispatch = useDispatch();
   const [errorMessage, setErrorMessage] = useState("");
   const { handleLoginSocial, user, token } = useLoginSocial();
+  const [isLoading, setIsLoading] = useState(false);
 
   const processLogin = useCallback(
     async (values) => {
+      setIsLoading(true);
       try {
         const { data } = await api.post("/auth/login", values);
         if (data.data.role === (isUser ? "USER" : "TENANT")) {
@@ -36,6 +40,7 @@ function Login() {
         const { message, errors } = err.response?.data || {};
         setErrorMessage(message ? message : errors[0].msg);
       }
+      setIsLoading(false);
     },
     [dispatch, isUser, navigate, saveToken, searchParams]
   );
@@ -72,6 +77,9 @@ function Login() {
       title={isUser ? "Start your journey!" : "Let's manage your properties!"}
       handleLoginSocial={handleLoginSocial}
     >
+      <GeneralModal isOpen={isLoading} closeModal={setIsLoading}>
+        <LoadingCard />
+      </GeneralModal>
       {errorMessage && (
         <p className="text-red-500 text-sm mt-2">{errorMessage}</p>
       )}

@@ -58,7 +58,7 @@ const NavBar = () => {
   const navigateTo = (route) => () => navigate(route);
 
   return (
-    <div className="sticky z-30 bg-white border-b md:mb-10 border-gray-300 max-w-7xl md:mx-auto top-0 w-full flex items-center justify-between flex-row px-5 py-3 md:px-5">
+    <div className="fixed z-10 bg-white border-b md:mb-10 border-gray-300 max-w-7xl md:mx-auto top-0 w-full flex items-center justify-between flex-row px-5 py-3 md:px-5">
       <ButtonWithLogo
         onClick={navigateTo("/")}
         align="row"

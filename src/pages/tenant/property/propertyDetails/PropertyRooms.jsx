@@ -6,6 +6,7 @@ import PropertyRoomForm from "../../../../components/forms/property/PropertyDeta
 import { Buffer } from "buffer";
 import { toast } from "react-hot-toast";
 import { mapRoomData } from "./dataMapper";
+import GeneralModal from "../../../../components/modals/GeneralModal";
 
 function PropertyRoom() {
   const { propertyId } = useParams();
@@ -22,6 +23,7 @@ function PropertyRoom() {
   }, []);
 
   const fetchAllData = async () => {
+    setIsLoading(true);
     try {
       const res = await api.get(`/room/all/${propertyId}`);
       const existingRooms = res.data.data.map(mapRoomData);
@@ -30,6 +32,7 @@ function PropertyRoom() {
     } catch (err) {
       console.error(err);
     }
+    setIsLoading(false);
   };
 
   const handleImageFile = (fileData) => {
@@ -39,6 +42,7 @@ function PropertyRoom() {
   };
 
   const handleFormSubmit = async (values) => {
+    setIsLoading(true);
     try {
       const roomPromises = [];
 
@@ -54,6 +58,7 @@ function PropertyRoom() {
       console.error(err);
       toast.error(err.response.data.error);
     }
+    setIsLoading(false);
   };
 
   const handleRoomCreation = (rooms) =>
@@ -127,14 +132,11 @@ function PropertyRoom() {
     }
   };
 
-  return isLoading ? (
-    <div className="bg-gray-900/10 h-[89vh] flex items-center justify-center">
-      <div className="w-full max-w-md transform overflow-hidden shadow-md rounded-3xl bg-white p-6 text-left align-middle transition-all">
-        <LoadingCard />
-      </div>
-    </div>
-  ) : (
+  return (
     <div className="mt-5">
+      <GeneralModal isOpen={isLoading} closeModal={setIsLoading}>
+        <LoadingCard />
+      </GeneralModal>
       <PropertyRoomForm
         ref={propertyDetailRef}
         initialValues={initialValues}

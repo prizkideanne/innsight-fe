@@ -2,12 +2,16 @@ import React, { useEffect, useState } from "react";
 import TableWithSortHeader from "../../components/tables/TableWithSortHeader";
 import api from "../../shared/api";
 import CategoryAreaFormModal from "../../components/modals/CategoryAreaFormModal";
+import GeneralModal from "../../components/modals/GeneralModal";
+import LoadingCard from "../../components/cards/LoadingCard";
+import toast from "react-hot-toast";
 
 function CategoryArea() {
   const [modalType, setModalType] = useState("add");
   const [isOpen, setIsOpen] = useState(false);
   const [tableData, setTableData] = useState([]);
   const [selectedCategory, setSelectedCategory] = useState(null);
+  const [isLoading, setIsLoading] = useState(false);
 
   // Fetch categories on component mount
   useEffect(() => {
@@ -28,6 +32,7 @@ function CategoryArea() {
 
   // Fetch categories from API
   const fetchCategories = async () => {
+    setIsLoading(true);
     try {
       const { data } = await api.get("/category-area/mine");
       const response =
@@ -38,6 +43,7 @@ function CategoryArea() {
     } catch (error) {
       console.error("Error fetching categories:", error);
     }
+    setIsLoading(false);
   };
 
   // Add, edit, and delete category functions
@@ -52,14 +58,24 @@ function CategoryArea() {
 
   // Generic function to modify categories
   const modifyCategory = async (method, url, data = {}) => {
+    setIsLoading(true);
     try {
-      await api[method](url, data);
-      fetchCategories();
-      setIsOpen(false);
-      setSelectedCategory(null);
+      const response = await api[method](url, data);
+      const message = response.data.message;
+      if (message.toLowerCase().includes("success")) {
+        fetchCategories();
+        setIsOpen(false);
+        setSelectedCategory(null);
+      } else {
+        toast.error(message, {
+          duration: 3000,
+        });
+        setIsOpen(false);
+      }
     } catch (error) {
       console.error("Error modifying category:", error);
     }
+    setIsLoading(false);
   };
 
   // Close modal
@@ -78,6 +94,9 @@ function CategoryArea() {
 
   return (
     <>
+      <GeneralModal isOpen={isLoading} closeModal={setIsLoading}>
+        <LoadingCard />
+      </GeneralModal>
       <CategoryAreaFormModal
         closeModal={closeModal}
         isOpen={isOpen}

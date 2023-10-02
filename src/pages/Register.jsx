@@ -10,6 +10,8 @@ import Button from "../components/buttons/Button";
 import api from "../shared/api";
 import AuthModal from "../components/modals/AuthModal";
 import { useLoginSocial } from "../shared/hooks/useLoginSocial";
+import GeneralModal from "../components/modals/GeneralModal";
+import LoadingCard from "../components/cards/LoadingCard";
 
 function Register() {
   const navigate = useNavigate();
@@ -21,6 +23,7 @@ function Register() {
   const [errorMessage, setErrorMessage] = useState("");
   const [formData, setFormData] = useState(null);
   const [file, setFile] = useState(null);
+  const [isLoading, setIsLoading] = useState(false);
 
   const [isUser, setIsUser] = useState(type === "user");
   const [steps, setSteps] = useState([
@@ -48,11 +51,12 @@ function Register() {
     setSteps(newSteps);
   };
 
-  const handleRegister = (values) => {
+  const handleRegister = async (values) => {
     setErrorMessage("");
     if (isUser) {
       // Register User
-      api
+      setIsLoading(true);
+      await api
         .post("/auth/register", {
           ...values,
           role: "USER",
@@ -67,21 +71,23 @@ function Register() {
             const { message, errors } = err.response.data;
             setErrorMessage(message ? message : errors[0].msg);
           }
+        })
+        .finally(() => {
+          setIsLoading(false);
         });
     } else if (steps[0].status === "current") {
       // Check if all fields are filled
       return handleNextStep();
     } else {
       // Register Tenant
-
       const data = new FormData();
       data.append("file", file);
       data.append("role", "TENANT");
       for (let key in formData) {
         data.append(key, formData[key]);
       }
-
-      api
+      setIsLoading(true);
+      await api
         .post("/auth/register", data)
         .then(({ data }) => {
           setIsModalOpen(true);
@@ -93,6 +99,7 @@ function Register() {
             setErrorMessage(message ? message : errors[0].msg);
           }
         });
+      setIsLoading(false);
     }
   };
 
@@ -102,6 +109,7 @@ function Register() {
   };
 
   const registerByGoogle = useCallback(async () => {
+    setIsLoading(true);
     if (user && token) {
       try {
         await api.post("/auth/register", {
@@ -124,6 +132,7 @@ function Register() {
         }
       }
     }
+    setIsLoading(false);
   }, [user, token]);
 
   useEffect(() => {
@@ -140,6 +149,9 @@ function Register() {
       title={`New ${isUser ? "User" : "Tenant"} Registration`}
       handleLoginSocial={handleLoginSocial}
     >
+      <GeneralModal isOpen={isLoading} closeModal={setIsLoading}>
+        <LoadingCard />
+      </GeneralModal>
       <AuthModal isOpen={isModalOpen} closeModal={closeModal} />
       <div className={isUser ? "hidden" : "block"}>
         <button

@@ -5,6 +5,8 @@ import moment from "moment";
 import RoomAvailabilityFormModal from "../../../../components/modals/RoomAvailabilityFormModal";
 import TableWithGroupedRows from "../../../../components/tables/TableWithGroupedRows";
 import { mapRoomAvailabilityData } from "./dataMapper";
+import GeneralModal from "../../../../components/modals/GeneralModal";
+import LoadingCard from "../../../../components/cards/LoadingCard";
 
 const PropertyAvailability = () => {
   const { propertyId } = useParams();
@@ -13,6 +15,7 @@ const PropertyAvailability = () => {
     useState(null);
   const [isOpen, setIsOpen] = useState(false);
   const [tableData, setTableData] = useState([]);
+  const [isLoading, setIsLoading] = useState(false);
 
   const setModal = useCallback((type, value = null) => {
     setModalType(type);
@@ -31,6 +34,7 @@ const PropertyAvailability = () => {
   };
 
   const fetchRoomAvailability = useCallback(async () => {
+    setIsLoading(true);
     try {
       const { data } = await api.get(`/room-status/all/${propertyId}`);
 
@@ -42,6 +46,7 @@ const PropertyAvailability = () => {
     } catch (error) {
       console.error("Error fetching room availability:", error);
     }
+    setIsLoading(false);
   }, [propertyId]);
 
   useEffect(() => {
@@ -49,6 +54,7 @@ const PropertyAvailability = () => {
   }, [fetchRoomAvailability]);
 
   const modifyAvailability = async (method, url, payload = {}) => {
+    setIsLoading(true);
     try {
       await api[method](url, payload);
       fetchRoomAvailability();
@@ -57,6 +63,7 @@ const PropertyAvailability = () => {
     } catch (error) {
       console.error("Error modifying category:", error);
     }
+    setIsLoading(false);
   };
 
   const addAvailability = (form) => {
@@ -95,6 +102,9 @@ const PropertyAvailability = () => {
 
   return (
     <>
+      <GeneralModal isOpen={isLoading} closeModal={setIsLoading}>
+        <LoadingCard />
+      </GeneralModal>
       <RoomAvailabilityFormModal
         closeModal={closeModal}
         isOpen={isOpen}

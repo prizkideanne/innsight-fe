@@ -12,6 +12,8 @@ import { useLocation, useNavigate } from "react-router-dom";
 import TextInput from "../../../components/textInputs/TextInput";
 import { getRange } from "../../../shared/utils";
 import Pagination from "../../../components/pagination/Pagination";
+import GeneralModal from "../../../components/modals/GeneralModal";
+import LoadingCard from "../../../components/cards/LoadingCard";
 
 const useQuery = () => {
   const { search } = useLocation();
@@ -33,6 +35,7 @@ const AvailableProperty = () => {
   const [properties, setProperties] = useState(null);
   const [propertyTypes, setPropertyTypes] = useState([]);
   const [rangePrice, setRangePrice] = useState("");
+  const [isLoading, setIsLoading] = useState(false);
   const today = new Date();
   const tomorrow = new Date(today);
   tomorrow.setDate(today.getDate() + 1);
@@ -67,6 +70,7 @@ const AvailableProperty = () => {
     return daysDifference;
   };
   const availableData = useCallback(async () => {
+    setIsLoading(true);
     if (location && startDate && endDate) {
       await axios
         .get(
@@ -93,6 +97,7 @@ const AvailableProperty = () => {
             toast.error("Date Must Be Selected");
           }
         });
+      setIsLoading(false);
     }
   }, [
     currentPage,
@@ -132,19 +137,23 @@ const AvailableProperty = () => {
   }, [locationQuery, startDateQuery, endDateQuery, locations]);
 
   const getLocations = async () => {
+    setIsLoading(true);
     const response = await axios.get(
       `${process.env.REACT_APP_API_BASE_URL}/location/all`
     );
     const data = response.data;
     setLocations(data.data);
+    setIsLoading(false);
   };
 
   const getTypes = async () => {
+    setIsLoading(true);
     const response = await axios.get(
       `${process.env.REACT_APP_API_BASE_URL}/property-type/all`
     );
     const data = response.data;
     setPropertyTypes(data.data);
+    setIsLoading(false);
   };
 
   const onChangePage = (page) => {
@@ -196,6 +205,9 @@ const AvailableProperty = () => {
   }, []);
   return (
     <>
+      <GeneralModal isOpen={isLoading} closeModal={setIsLoading}>
+        <LoadingCard />
+      </GeneralModal>
       <MainContainer>
         <div className="w-full max-w-7xl flex flex-col mx-auto gap-5">
           <div className="flex flex-col md:flex-row justify-between py-4 px-4 gap-y-5 rounded-md border ">

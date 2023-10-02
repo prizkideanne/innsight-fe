@@ -47,14 +47,14 @@ function HeroCard({
   }, []);
 
   return (
-    <div className="bg-gradient-to-br from-primary to-accent md:px-20 py-10 rounded-lg p-3 w-full flex flex-col relative pb-16 md:h-[360px] md:rounded-3xl md:shadow-[0_35px_60px_-15px_rgba(46,144,230,0.1)] z-10">
+    <div className="bg-gradient-to-br from-primary to-accent md:px-20 py-10 rounded-lg p-3 w-full flex flex-col relative pb-16 md:h-[360px] md:rounded-3xl md:shadow-[0_35px_60px_-15px_rgba(46,144,230,0.1)] z-[9]">
       <p className="font-brand text-3xl md:text-6xl md:w-[500px] text-white z-10">
         No more booking fright, Innsight makes it all right.
       </p>
       <img
         alt="arrow"
         src="/assets/arrow.png"
-        className="w-32 h-32 absolute left-[550px] rotate-45 bottom-14 hidden md:block"
+        className="w-32 h-32 absolute left-[550px] rotate-45 bottom-14 hidden lg:block"
       />
       <img
         src="/assets/tour.png"

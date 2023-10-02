@@ -41,7 +41,9 @@ function AuthLayout({
           )}
         >
           <ButtonWithLogo
-            onClick={() => navigate("/")}
+            onClick={() => {
+              window.location.href = "/";
+            }}
             imageSize={
               page === "login" ? "w-14 h-14" : "h-8 w-8 md:w-10 md:h-10"
             }

@@ -4,6 +4,7 @@ import { useNavigate } from "react-router-dom";
 import api from "../../../shared/api";
 import GeneralModal from "../../../components/modals/GeneralModal";
 import Dropdown from "../../../components/dropdown/Dropdown";
+import LoadingCard from "../../../components/cards/LoadingCard";
 
 function PropertyList() {
   const navigate = useNavigate();
@@ -16,8 +17,10 @@ function PropertyList() {
   const [propertyTypes, setPropertyTypes] = React.useState([]);
   const [selectedPropertyType, setSelectedPropertyType] = React.useState(null);
   const [sortBy, setSortBy] = React.useState(null);
+  const [isLoading, setIsLoading] = React.useState(false);
 
   function fetchProperties(filter, sort, page, perpage, filterType) {
+    setIsLoading(true);
     const query = [];
     if (filter) query.push(`filter=${filter}`);
     if (page) query.push(`page=${page}`);
@@ -26,7 +29,9 @@ function PropertyList() {
     if (sort) query.push(`sortBy=${sort ? sort : sortBy}`);
 
     const queryString = query.length ? `?${query.join("&")}` : "";
-    return api.get(`/property/mine${queryString}`);
+    return api.get(`/property/mine${queryString}`).finally(() => {
+      setIsLoading(false);
+    });
   }
 
   function handleError(error) {
@@ -88,6 +93,7 @@ function PropertyList() {
   };
 
   const deleteProperty = async () => {
+    setIsLoading(true);
     try {
       await api.delete(`/property/delete/${selected.id}`);
       fetchProperties(
@@ -115,6 +121,7 @@ function PropertyList() {
     } catch (error) {
       console.log("error", error);
     }
+    setIsLoading(false);
   };
 
   const renderFilter = () => {
@@ -267,6 +274,9 @@ function PropertyList() {
 
   return (
     <div className="max-w-none w-full mx-0">
+      <GeneralModal isOpen={isLoading} closeModal={setIsLoading}>
+        <LoadingCard />
+      </GeneralModal>
       <GeneralModal
         isOpen={isDelete}
         closeModal={setIsDelete}

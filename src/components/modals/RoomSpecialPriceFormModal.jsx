@@ -26,6 +26,7 @@ const RoomSpecialPriceFormModal = ({
   modalSubmit,
   modalType,
   selectedRoomSpecialPrice,
+  setSelectedRoomSpecialPrice,
 }) => {
   const { propertyId } = useParams();
   const [rooms, setRooms] = useState([]);
@@ -84,6 +85,7 @@ const RoomSpecialPriceFormModal = ({
             isOpen={isOpen}
             modalType={modalType}
             rooms={rooms}
+            setSelectedRoomSpecialPrice={setSelectedRoomSpecialPrice}
           />
         );
       }}

@@ -5,6 +5,8 @@ import moment from "moment";
 import TableWithGroupedRows from "../../../../components/tables/TableWithGroupedRows";
 import { mapRoomSpecialPriceData } from "./dataMapper";
 import RoomSpecialPriceFormModal from "../../../../components/modals/RoomSpecialPriceFormModal";
+import GeneralModal from "../../../../components/modals/GeneralModal";
+import LoadingCard from "../../../../components/cards/LoadingCard";
 
 const PropertySpecialPrice = () => {
   const { propertyId } = useParams();
@@ -13,6 +15,7 @@ const PropertySpecialPrice = () => {
     useState(null);
   const [isOpen, setIsOpen] = useState(false);
   const [tableData, setTableData] = useState([]);
+  const [isLoading, setIsLoading] = useState(false);
 
   const setModal = useCallback((type, value = null) => {
     setModalType(type);
@@ -30,7 +33,8 @@ const PropertySpecialPrice = () => {
     }));
   };
 
-  const fetchRoomAvailability = useCallback(async () => {
+  const fetchRoomSpecialPrice = useCallback(async () => {
+    setIsLoading(true);
     try {
       const { data } = await api.get(`/special-price/all/${propertyId}`);
       const sortedData = sortSpecialPricesByUpdatedAt(data.data);
@@ -39,43 +43,47 @@ const PropertySpecialPrice = () => {
         : [];
       setTableData(mappedData);
     } catch (error) {
-      console.error("Error fetching room availability:", error);
+      console.error("Error fetching room SpecialPrice:", error);
     }
+    setModalType("add");
+    setSelectedRoomSpecialPrice(null);
+    setIsLoading(false);
   }, [propertyId]);
 
   useEffect(() => {
-    fetchRoomAvailability();
-  }, [fetchRoomAvailability]);
+    fetchRoomSpecialPrice();
+  }, [fetchRoomSpecialPrice]);
 
-  const modifyAvailability = async (method, url, payload = {}) => {
+  const modifySpecialPrice = async (method, url, payload = {}) => {
+    setIsLoading(true);
     try {
       await api[method](url, payload);
-      fetchRoomAvailability();
+      fetchRoomSpecialPrice();
       setIsOpen(false);
-      setSelectedRoomSpecialPrice(null);
     } catch (error) {
       console.error("Error modifying category:", error);
     }
+    setIsLoading(false);
   };
 
-  const addAvailability = (form) => {
+  const addSpecialPrice = (form) => {
     const payload = {
       roomId: form.room.id,
       specialPrice: form.price,
       startDate: moment(form.startDate).format("YYYY-MM-DD"),
       endDate: moment(form.endDate).format("YYYY-MM-DD"),
     };
-    modifyAvailability("post", "/special-price/create", payload);
+    modifySpecialPrice("post", "/special-price/create", payload);
   };
 
-  const editAvailability = (form) => {
+  const editSpecialPrice = (form) => {
     const payload = {
       specialPrice: form.price,
       startDate: moment(form.startDate).format("YYYY-MM-DD"),
       endDate: moment(form.endDate).format("YYYY-MM-DD"),
       isActive: form.isActive,
     };
-    modifyAvailability(
+    modifySpecialPrice(
       "patch",
       `/special-price/edit/${selectedRoomSpecialPrice.id}`,
       payload
@@ -85,7 +93,7 @@ const PropertySpecialPrice = () => {
   const closeModal = () => setIsOpen(false);
 
   const modalSubmit = (values, formikBag) => {
-    modalType === "add" ? addAvailability(values) : editAvailability(values);
+    modalType === "add" ? addSpecialPrice(values) : editSpecialPrice(values);
     if (formikBag) {
       formikBag.setSubmitting(false);
       formikBag.resetForm();
@@ -94,12 +102,16 @@ const PropertySpecialPrice = () => {
 
   return (
     <>
+      <GeneralModal isOpen={isLoading} closeModal={setIsLoading}>
+        <LoadingCard />
+      </GeneralModal>
       <RoomSpecialPriceFormModal
         closeModal={closeModal}
         isOpen={isOpen}
         modalSubmit={modalSubmit}
         modalType={modalType}
         selectedRoomSpecialPrice={selectedRoomSpecialPrice}
+        setSelectedRoomSpecialPrice={setSelectedRoomSpecialPrice}
       />
       <TableWithGroupedRows
         title="Special Price"

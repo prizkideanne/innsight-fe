@@ -27,6 +27,7 @@ function RoomSpecialPriceSectionForm({
   setFieldValue,
   modalType,
   rooms,
+  setSelectedRoomSpecialPrice
 }) {
   const [isWithPercentage, setIsWithPercentage] = useState(false);
   const [percentage, setPercentage] = useState(0);
@@ -47,6 +48,7 @@ function RoomSpecialPriceSectionForm({
     resetForm();
     setIsWithPercentage(false);
     setPercentage(0);
+    setSelectedRoomSpecialPrice(null);
     closeModal();
   };
 

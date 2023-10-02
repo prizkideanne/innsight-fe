@@ -64,11 +64,11 @@ function PropertyAdd() {
     try {
       const values = await process;
       console.log("values", values);
-      setIsLoading(false);
       navigate("/");
     } catch (error) {
       console.error("An error occurred:", error);
     }
+    setIsLoading(false);
   };
 
   const createProperty = async (values) => {
