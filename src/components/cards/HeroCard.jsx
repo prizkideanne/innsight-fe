@@ -83,11 +83,13 @@ function HeroCard({
               leave="transition ease-in duration-100"
               leaveFrom="opacity-100"
               leaveTo="opacity-0"
-              afterLeave={() => setLocation(selectedLocation.city)}
+              afterLeave={() =>
+                selectedLocation && setLocation(selectedLocation.city)
+              }
             >
-              <Combobox.Options className="absolute top-10 z-10 max-h-60 w-full overflow-auto rounded-md bg-white py-1 text-base shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none sm:text-sm">
+              <Combobox.Options className="absolute top-10 z-[99] max-h-60 w-full overflow-auto rounded-md bg-white py-1 text-base shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none sm:text-sm">
                 {filteredLocation.length === 0 && location !== "" ? (
-                  <div className="relative cursor-default select-none py-2 px-4 text-gray-700">
+                  <div className="relative cursor-default select-none py-2 px-4 text-gray-700 bg-white z-[99]">
                     Nothing found.
                   </div>
                 ) : (

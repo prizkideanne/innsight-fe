@@ -8,6 +8,9 @@ import { useNavigate, useParams } from "react-router-dom";
 import jwt from "jwt-decode";
 import AuthModal from "../components/modals/AuthModal";
 import { useModal } from "../shared/context/ModalContext";
+import GeneralModal from "../components/modals/GeneralModal";
+import LoadingCard from "../components/cards/LoadingCard";
+import { set } from "date-fns";
 
 const otpValidationSchema = Yup.object().shape({
   otp: Yup.array()
@@ -26,6 +29,7 @@ function VerifyOTP() {
   const [errorMessage, setErrorMessage] = useState("");
   const [otpCounter, setOtpCounter] = useState(0);
   const [isOpenModal, setIsOpenModal] = useState(false);
+  const [isLoading, setIsLoading] = useState(false);
   const navigate = useNavigate("/");
   const { token } = useParams();
   const formik = useFormik({
@@ -33,10 +37,11 @@ function VerifyOTP() {
       otp: Array(4).fill(""),
     },
     validationSchema: otpValidationSchema,
-    onSubmit: (values) => {
+    onSubmit: async (values) => {
+      setIsLoading(true);
       setErrorMessage("");
       const otpValue = values.otp.join("");
-      api
+      await api
         .patch("/auth/verification/" + token, {
           otp: otpValue,
         })
@@ -54,13 +59,15 @@ function VerifyOTP() {
             setErrorMessage(message);
           }
         });
+      setIsLoading(false);
     },
   });
   const inputRefs = useRef([]);
 
-  const resendOTP = () => {
+  const resendOTP = async () => {
+    setIsLoading(true);
     const { email } = jwt(token);
-    api
+    await api
       .post("/auth/resend-otp", {
         email,
       })
@@ -71,10 +78,14 @@ function VerifyOTP() {
       .catch((err) => {
         setErrorMessage(err.response.data.message);
       });
+    setIsLoading(false);
   };
 
   return (
     <AuthLayout page="otp" title={"OTP Verification"}>
+      <GeneralModal isOpen={isLoading} closeModal={setIsLoading}>
+        <LoadingCard />
+      </GeneralModal>
       <AuthModal
         closeModal={() => setIsOpenModal(false)}
         isOpen={isOpenModal}

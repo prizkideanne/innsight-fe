@@ -5,6 +5,8 @@ import { useFormik } from "formik";
 import * as Yup from "yup";
 import { toast } from "react-hot-toast";
 import { useNavigate, useParams } from "react-router-dom";
+import GeneralModal from "../components/modals/GeneralModal";
+import LoadingCard from "../components/cards/LoadingCard";
 
 const validationSchema = Yup.object({
   newPass: Yup.string()
@@ -23,6 +25,7 @@ function ResetPassword() {
   const { token } = useParams();
   const navigate = useNavigate();
   const [errorMessage, setErrorMessage] = useState("");
+  const [isLoading, setIsLoading] = useState(false);
 
   const formik = useFormik({
     initialValues: {
@@ -31,6 +34,7 @@ function ResetPassword() {
     },
     validationSchema,
     onSubmit: async (values) => {
+      setIsLoading(true);
       try {
         await api.patch("/auth/reset-password", {
           token,
@@ -50,11 +54,15 @@ function ResetPassword() {
           duration: 3000,
         });
       }
+      setIsLoading(false);
     },
   });
 
   return (
     <AuthLayout page="Reset Password" title={"Reset Password"}>
+      <GeneralModal isOpen={isLoading} closeModal={setIsLoading}>
+        <LoadingCard />
+      </GeneralModal>
       <form
         className="flex flex-col items-center justify-center w-full space-y-4"
         onSubmit={formik.handleSubmit}

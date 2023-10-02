@@ -70,7 +70,6 @@ const AvailableProperty = () => {
     return daysDifference;
   };
   const availableData = useCallback(async () => {
-    setIsLoading(true);
     if (location && startDate && endDate) {
       await axios
         .get(
@@ -97,7 +96,6 @@ const AvailableProperty = () => {
             toast.error("Date Must Be Selected");
           }
         });
-      setIsLoading(false);
     }
   }, [
     currentPage,
