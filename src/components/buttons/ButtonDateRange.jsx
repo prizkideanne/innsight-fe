@@ -16,7 +16,7 @@ function ButtonDateRange({
   dateSpecialPrice = [],
 }) {
   return (
-    <Popover className={`relative ${className}`}>
+    <Popover className={`relative ${className} z-50`}>
       {({ close }) => (
         <>
           <Popover.Button className="flex flex-row items-center w-full">

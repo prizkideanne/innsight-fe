@@ -102,7 +102,7 @@ function Home() {
           setLocation={(e) => setLocation(e)}
           onSearch={navigateToSearch}
         />
-        <div className="">
+        <div className="z-0 relative">
           <div className="mt-36 md:mt-48">
             <p className="font-brand text-xl md:text-3xl mb-5 md:mb-10">
               Top City To Explore
