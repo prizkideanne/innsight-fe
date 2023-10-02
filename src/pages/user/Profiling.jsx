@@ -10,8 +10,12 @@ import Column from "../../components/widget/Column";
 import Title from "../../components/texts/Title";
 import { auth } from "../../firebase/firebase";
 import Row from "../../components/widget/Row";
+import api from "../../shared/api";
+import { useDispatch } from "react-redux";
+import { addUser } from "../../store/auth/authSlice";
 
 function Profiling() {
+  const dispatch = useDispatch();
   const currentUser = auth.currentUser;
   const [full_name, setFull_name] = useState("");
   const [birth_date, setBirth_date] = useState("");
@@ -24,6 +28,15 @@ function Profiling() {
     "https://tse1.mm.bing.net/th?id=OIP.yYUwl3GDU07Q5J5ttyW9fQHaHa&pid=Api&rs=1&c=1&qlt=95&h=180"
   );
   const [editable, setEditable] = useState(true);
+
+  const fetchUserData = async () => {
+    try {
+      const res = await api.get("/auth/keep-login");
+      dispatch(addUser(res.data.data));
+    } catch (err) {
+      console.log("keep login err", err);
+    }
+  };
 
   const updateProfile = async (e) => {
     e.preventDefault();
@@ -44,6 +57,7 @@ function Profiling() {
         const data = res.data;
         if (data.status) {
           setEditable(true);
+          fetchUserData();
           toast.success(data.message);
         } else {
           toast.error(data.message);
@@ -151,6 +165,7 @@ function Profiling() {
           const data = res.data;
           if (data.message) {
             toast.success(data.message);
+            fetchUserData()
             setFoto(null);
             setUpdateFoto(false);
           }

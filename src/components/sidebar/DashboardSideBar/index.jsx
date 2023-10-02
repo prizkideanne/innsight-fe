@@ -7,12 +7,14 @@ import { selectCurrentUser } from "../../../store/auth/authSlice";
 import { useSelector } from "react-redux";
 import GeneralModal from "../../modals/GeneralModal";
 import LoadingCard from "../../cards/LoadingCard";
+import useToken from "../../../shared/hooks/useToken";
 
 export default function DashboardSideBar() {
+  const { token } = useToken();
   const user = useSelector(selectCurrentUser);
   const [sidebarOpen, setSidebarOpen] = useState(false);
 
-  if (!user.role) {
+  if (token && !user.role) {
     return (
       <GeneralModal isOpen={true} closeModal={() => null}>
         <LoadingCard />
