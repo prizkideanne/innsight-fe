@@ -59,6 +59,7 @@ function TenantOrderList() {
   };
 
   const acceptOrder = async (action) => {
+    console.log("reject reason", reason);
     axios
       .post(
         `${process.env.REACT_APP_API_BASE_URL}/transaction/order-user/${order.booking_code}/${order.user_id}`,
@@ -129,6 +130,7 @@ function TenantOrderList() {
   };
 
   const reasonHandler = (e) => {
+    console.log("REASON", e.target.value);
     setReason(e.target.value);
   };
 
@@ -207,12 +209,15 @@ function TenantOrderList() {
             <Row className={"w-full"}>
               {sendReason ? (
                 <div className="w-full">
-                  <TextAreaWithLabel
-                    label={`${sendReason} Reason`}
-                    placeholder={`${sendReason} Reason`}
-                    form={{ errors: [] }}
-                    onChange={reasonHandler}
-                  />
+                  <div className="space-y-1 flex flex-col">
+                    <label className="text-sm capitalize ">{`${sendReason} Reason`}</label>
+                    <textarea
+                      rows={4}
+                      className="block w-full rounded-md border py-1.5 px-4 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-primary sm:text-sm sm:leading-6"
+                      placeholder={`${sendReason} Reason`}
+                      onChange={reasonHandler}
+                    />
+                  </div>
                 </div>
               ) : (
                 <></>

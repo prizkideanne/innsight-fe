@@ -36,9 +36,15 @@ function PropertyRoom() {
   };
 
   const handleImageFile = (fileData) => {
-    const base64Data = fileData.split(",")[1];
-    const buffer = Buffer.from(base64Data, "base64");
-    return new Blob([buffer], { type: "image/jpeg" });
+    if (fileData) {
+      const base64Data = fileData.split(",")[1];
+      if (base64Data) {
+        const buffer = Buffer.from(base64Data, "base64");
+        console.log("file", new Blob([buffer], { type: "image/jpeg" }));
+        return new Blob([buffer], { type: "image/jpeg" });
+      }
+    }
+    return null;
   };
 
   const handleFormSubmit = async (values) => {
@@ -47,10 +53,15 @@ function PropertyRoom() {
       const roomPromises = [];
 
       // Handling rooms for creation, update, and deletion
-      roomPromises.push(...handleRoomCreation(values.rooms));
-      roomPromises.push(...handleRoomUpdate(values.existingRooms));
-      roomPromises.push(...handleRoomDeletion(deletedExistingRoom));
-
+      if (values && values.rooms.length > 0) {
+        roomPromises.push(...handleRoomCreation(values.rooms));
+      }
+      if (values && values.existingRooms.length > 0) {
+        roomPromises.push(...handleRoomUpdate(values.existingRooms));
+      }
+      if (deletedExistingRoom.length > 0) {
+        roomPromises.push(...handleRoomDeletion(deletedExistingRoom));
+      }
       await Promise.all(roomPromises);
       toast.success("Successfully updated!");
       fetchAllData();
@@ -61,33 +72,45 @@ function PropertyRoom() {
     }
   };
 
-  const handleRoomCreation = (rooms) =>
-    rooms.map((room) => {
-      const formData = new FormData();
-      formData.append("propId", propertyId);
-      formData.append("name", room.name);
-      formData.append("description", room.description);
-      formData.append("price", room.basePrice);
-      if (room.roomImage) {
-        formData.append("file", handleImageFile(room.roomImage));
-      }
-      return createRoom(formData);
-    });
+  const handleRoomCreation = (rooms) => {
+    if (rooms && rooms.length > 0) {
+      return rooms.map((room) => {
+        const formData = new FormData();
+        formData.append("propId", propertyId);
+        formData.append("name", room.name);
+        formData.append("description", room.description);
+        formData.append("price", room.basePrice);
+        if (room.roomImage) {
+          formData.append("file", handleImageFile(room.roomImage));
+        }
+        return createRoom(formData);
+      });
+    }
+    return [];
+  };
 
-  const handleRoomUpdate = (existingRooms) =>
-    existingRooms.map((room) =>
-      updateRoom(room.id, {
-        name: room.name,
-        description: room.description,
-        price: room.basePrice,
-        file: room.roomImage.startsWith("/static")
-          ? null
-          : handleImageFile(room.roomImage),
-      })
-    );
+  const handleRoomUpdate = (existingRooms) => {
+    if (existingRooms && existingRooms.length > 0) {
+      return existingRooms.map((room) => {
+        console.log(room);
+        const file = handleImageFile(room.roomImage);
+        console.log(file);
+        return updateRoom(room.id, {
+          name: room.name,
+          description: room.description,
+          price: room.basePrice,
+          file,
+        });
+      });
+    }
+    return [];
+  };
 
   const handleRoomDeletion = (rooms) => {
-    rooms.map((room) => deleteRoom(room.id));
+    if (rooms && rooms.length > 0) {
+      return rooms.map((room) => deleteRoom(room.id));
+    }
+    return [];
   };
 
   const createRoom = async (formData) => {
@@ -107,15 +130,8 @@ function PropertyRoom() {
     formData.append("price", room.price);
 
     if (room.file) {
-      if (typeof room.file === "string" && room.file.startsWith("data:image")) {
-        // Convert base64 to Blob
-        const base64Data = room.file.split(",")[1];
-        const buffer = Buffer.from(base64Data, "base64");
-        const blob = new Blob([buffer], { type: "image/png" });
-        formData.append("file", blob);
-      }
+      formData.append("file", room.file, "image.png"); // Appending the blob directly
     }
-
     try {
       await api.patch(`/room/edit/${id}`, formData);
     } catch (error) {

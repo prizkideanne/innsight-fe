@@ -141,7 +141,7 @@ function Home() {
                           className="h-[240px] md:h-[300px] max-w-[300px] border rounded-xl flex flex-col"
                         >
                           <img
-                            src={`${process.env.REACT_APP_API_BASE_URL}${firstImage}`}
+                            src={firstImage}
                             alt={name}
                             className="object-cover h-[100px] md:h-[180px] w-full rounded-t-xl z-0 flex"
                           />

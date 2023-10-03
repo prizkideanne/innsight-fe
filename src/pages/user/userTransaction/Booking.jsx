@@ -79,6 +79,8 @@ const BookingProperty = () => {
     let totalBasePrice = 0;
     let totalBasePriceDays = days - totalSpecialPriceDays;
     totalBasePrice += totalBasePriceDays * room.base_price;
+    console.log("PRICE", totalBasePrice);
+
     setPrice(totalBasePrice + totalSpecialPrice);
   };
 
@@ -140,7 +142,7 @@ const BookingProperty = () => {
           <Column className="w-full gap-5 ">
             <img
               className="min-w-[50%] aspect-video rounded-lg"
-              src={`${process.env.REACT_APP_API_BASE_URL}${room?.room_img}`}
+              src={room?.room_img}
               alt=""
             />
             <Column className="w-full gap-2">

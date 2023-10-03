@@ -281,12 +281,16 @@ function OrderList() {
                   <Column>
                     <Title label={"Send Your Review"} />
                     <SubTitle label={""} />
-                    <TextAreaWithLabel
-                      label={``}
-                      placeholder={`Comment Here`}
-                      form={{ errors: [] }}
-                      onChange={(e) => setComment(e.target.value)}
-                    />
+
+                    <div className="space-y-1 flex flex-col">
+                      <label className="text-sm capitalize ">{``}</label>
+                      <textarea
+                        rows={4}
+                        className="block w-full rounded-md border py-1.5 px-4 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-primary sm:text-sm sm:leading-6"
+                        placeholder={`Comment Here`}
+                        onChange={(e) => setComment(e.target.value)}
+                      />
+                    </div>
                     <Button
                       type="button"
                       label={"Send Review"}
