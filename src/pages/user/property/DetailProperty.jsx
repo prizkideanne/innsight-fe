@@ -92,7 +92,6 @@ const DetailProperty = () => {
         }
       )
       .then((response) => {
-        console.log("response", response.data.data);
         setProperty(response.data.data);
         const prop = response.data.data;
         let prices = prop?.Rooms.map((row) => row.base_price);
@@ -157,7 +156,13 @@ const DetailProperty = () => {
         }
       )
       .then((response) => {
-        setReviews(response.data.data);
+        const reviewsData = response.data.data;
+        const filteredData = reviewsData.filter(
+          (item) =>
+            item.Booking.Room !== null &&
+            item.Booking.Room.Property.id === Number(id.split("-")[1])
+        );
+        setReviews(filteredData);
         setTotalPage(response.data.pagination.totalPage);
       });
     setIsLoading(false);
