@@ -54,11 +54,12 @@ function PropertyRoom() {
       await Promise.all(roomPromises);
       toast.success("Successfully updated!");
       fetchAllData();
+      setIsLoading(false);
     } catch (err) {
       console.error(err);
+      setIsLoading(false);
       toast.error(err.response.data.error);
     }
-    setIsLoading(false);
   };
 
   const handleRoomCreation = (rooms) =>
@@ -90,15 +91,19 @@ function PropertyRoom() {
     rooms.map((room) => deleteRoom(room.id));
 
   const createRoom = async (formData) => {
+    setIsLoading(true);
     try {
       await api.post("/room/create", formData);
+      setIsLoading(false);
     } catch (error) {
       console.error("Error creating room:", error);
+      setIsLoading(false);
       throw error;
     }
   };
 
   const updateRoom = async (id, room) => {
+    setIsLoading(true);
     const formData = new FormData();
     formData.append("propId", propertyId);
     formData.append("name", room.name);
@@ -117,17 +122,22 @@ function PropertyRoom() {
 
     try {
       await api.patch(`/room/edit/${id}`, formData);
+      setIsLoading(false);
     } catch (error) {
       console.error("Error updating room:", error);
+      setIsLoading(false);
       throw error;
     }
   };
 
   const deleteRoom = async (id) => {
+    setIsLoading(true);
     try {
       await api.delete(`/room/delete/${id}`);
+      setIsLoading(false);
     } catch (error) {
       console.error("Error deleting room:", error);
+      setIsLoading(false);
       throw error;
     }
   };
