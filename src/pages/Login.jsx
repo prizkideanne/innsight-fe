@@ -22,6 +22,7 @@ function Login() {
 
   const processLogin = useCallback(
     async (values) => {
+      console.log("processLogin");
       setIsLoading(true);
       try {
         const { data } = await api.post("/auth/login", values);
@@ -32,15 +33,17 @@ function Login() {
             navigate(searchParams.get("redirect"));
             return;
           }
+          setIsLoading(false);
           navigate("/");
         } else {
+          setIsLoading(false);
           setErrorMessage("You are not allowed, please make sure your role");
         }
       } catch (err) {
         const { message, errors } = err.response?.data || {};
         setErrorMessage(message ? message : errors[0].msg);
+        setIsLoading(false);
       }
-      setIsLoading(false);
     },
     [dispatch, isUser, navigate, saveToken, searchParams]
   );
@@ -54,8 +57,9 @@ function Login() {
   };
 
   const loginByGoogle = useCallback(async () => {
+    console.log("loginByGoogle");
     if (user && token) {
-      processLogin({
+      await processLogin({
         email: user.email,
         role: "USER",
         isLoginBySocial: true,
@@ -64,6 +68,8 @@ function Login() {
   }, [processLogin, token, user]);
 
   useEffect(() => {
+    console.log("useEffect");
+
     if (user && token) {
       loginByGoogle();
     }
