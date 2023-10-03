@@ -140,6 +140,8 @@ function OrderList() {
   useEffect(() => {
     getAllOrder();
   }, [currentPage, sortBy]);
+
+  console.log("orders", orders);
   return (
     <>
       <MainContainer>
@@ -234,7 +236,7 @@ function OrderList() {
                         />
                       }
                       title={row.Room?.Property?.name}
-                      image={row.room_img}
+                      image={row.Room.room_img}
                       type={`${row.Room?.Property?.Property_type?.name} - ${row.Room?.name}`}
                       check_in={moment(row.check_in_date, "YYYY-MM-DD").format(
                         "DD/MM/YYYY"
