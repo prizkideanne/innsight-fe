@@ -54,13 +54,15 @@ function TenantTabelReport() {
         ? `/report?sortBy=${filter}`
         : `/report?start_date=${startDate}&end_date=${endDate}&sortBy=${filter}`
     );
+
+    console.log("data", data);
     const response =
       data && data.data && data.data.length
         ? data.data.map((item) => ({
             id: item.id,
             userName: item.User.Profile.full_name,
-            Property_Name: item.Room?.Property.name,
-            property_Type: item.Room?.Property.Property_type.name,
+            Property_Name: item.Room?.Property?.name,
+            property_Type: item.Room?.Property?.Property_type.name,
             status: item.booking_status,
             total: item.total_invoice,
             check_in: moment(item.check_in_date).utc(true).format("DD-MM-YYYY"),
